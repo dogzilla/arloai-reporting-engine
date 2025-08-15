@@ -119,6 +119,18 @@ class DataProcessor:
             logger.error(f"Error processing CSV file {file_path}: {e}")
             return self._empty_data_structure()
     
+    def process_pdf(self, file_path: str) -> Dict[str, Any]:
+        """
+        Public method to process PDF file and extract text content.
+        
+        Args:
+            file_path: Path to PDF file
+            
+        Returns:
+            Dictionary with extracted text and metadata
+        """
+        return self._process_pdf_content(file_path)
+    
     def _process_pdf(self, file_path: Path) -> Dict[str, Any]:
         """Process PDF files (placeholder implementation)."""
         logger.debug(f"Processing PDF file: {file_path}")
@@ -134,6 +146,44 @@ class DataProcessor:
                 'note': 'PDF processing not yet implemented'
             }
         }
+    
+    def _process_pdf_content(self, file_path: str) -> Dict[str, Any]:
+        """
+        Process PDF file and extract text content.
+        
+        Args:
+            file_path: Path to PDF file
+            
+        Returns:
+            Dictionary with extracted text and metadata
+        """
+        try:
+            import PyPDF2
+            
+            with open(file_path, 'rb') as file:
+                pdf_reader = PyPDF2.PdfReader(file)
+                
+                pages = []
+                for page_num, page in enumerate(pdf_reader.pages):
+                    text = page.extract_text()
+                    pages.append({
+                        'page_number': page_num + 1,
+                        'text': text
+                    })
+                
+                return {
+                    'type': 'pdf',
+                    'pages': pages,
+                    'total_pages': len(pdf_reader.pages),
+                    'metadata': pdf_reader.metadata if hasattr(pdf_reader, 'metadata') else {}
+                }
+                
+        except ImportError:
+            logger.error("PyPDF2 not installed. Install with: pip install PyPDF2")
+            return {'type': 'pdf', 'error': 'PyPDF2 not installed'}
+        except Exception as e:
+            logger.error(f"Error processing PDF {file_path}: {e}")
+            return {'type': 'pdf', 'error': str(e)}
     
     def _process_json(self, file_path: Path) -> Dict[str, Any]:
         """Process JSON files."""
