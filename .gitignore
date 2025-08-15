@@ -135,14 +135,19 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-*.pdf
-*.xlsx
-*.xls
-sample_data/
 output_reports/
 temp/
 .browser_screenshots/
 server.log
+
+# Example outputs
+examples/output/
+
+# Sample data files (uncomment specific lines if they contain sensitive data)
+# examples/sample_data/pdfs/*.pdf
+# examples/sample_data/excel/*.xlsx
+# examples/sample_data/excel/*.xls
+# examples/sample_data/csv/*.csv
 
 # Exclude other projects in workspace
 pytorch-lightning/
