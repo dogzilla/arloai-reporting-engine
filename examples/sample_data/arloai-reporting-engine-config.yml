@@ -1,0 +1,69 @@
+# ArloAI Reporting Engine - Configuration
+
+project:
+  name: ArloAI Reporting Engine
+  version: 1.0
+  status: active
+  design_reference: sample_insight_report.pdf
+  output_format: HTML
+  export_options:
+    - HTML
+    - PDF
+
+report_types:
+  - initial
+  - mid_campaign
+  - final
+
+input_sources:
+  manual:
+    - summary_pdf
+    - ctr_report_xlsx
+  future_api: true
+
+template_engine: jinja2
+
+widgets_enabled:
+  - ctr_over_time
+  - imps_clicks_over_time
+  - creative_comparison
+  - daily_spend_chart
+  - session_engagement_chart
+  - budget_pacing_meter
+  - topline_kpi_grid
+  - placement_performance_table
+
+future_widgets_planned:
+  - day_of_week
+  - time_of_day
+  - city
+  - dma
+  - region
+  - gender
+  - age
+  - income
+  - weather
+  - temperature
+  - carrier
+  - device_type
+  - mindset_index
+  - retargeting
+
+integration:
+  template_engine: jinja2
+  automation:
+    - open_interpreter
+    - n8n
+    - activepieces
+  dashboard_output: true
+  archiving: open_notebook
+
+ingestion:
+  current_mode: manual
+  future_mode: api_ingestion_supported
+
+notes:
+  - All report generation should conform visually to the sample_insight_report.pdf.
+  - Widget rendering should be modular, and data-agnostic.
+  - Future extensibility is critical for segmentation and dashboarding.
+
