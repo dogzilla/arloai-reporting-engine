@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArloAI Campaign Report - {{ report_type|title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .report-meta {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .report-meta h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .meta-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .meta-label {
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9em;
+        }
+        
+        .meta-value {
+            color: #333;
+            margin-top: 5px;
+        }
+        
+        .widgets-container {
+            display: grid;
+            gap: 30px;
+        }
+        
+        .widget {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        
+        .widget:hover {
+            transform: translateY(-2px);
+        }
+        
+        .widget-content {
+            padding: 25px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                max-width: none;
+                padding: 0;
+            }
+            
+            .widget {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+            
+            .header {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Campaign Performance Report</h1>
+            <div class="subtitle">{{ report_type|replace('_', ' ')|title }} Report</div>
+        </header>
+        
+        <!-- Report Metadata -->
+        <section class="report-meta">
+            <h2>Report Information</h2>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <div class="meta-label">Report Type</div>
+                    <div class="meta-value">{{ report_type|replace('_', ' ')|title }}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Generated</div>
+                    <div class="meta-value">{{ metadata.generated_at[:19]|replace('T', ' ') }}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Data Sources</div>
+                    <div class="meta-value">{{ metadata.data_sources|length }} file(s)</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Widgets</div>
+                    <div class="meta-value">{{ widgets|length }} widget(s)</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Widgets Container -->
+        <main class="widgets-container">
+            {% for widget_name, widget_content in widgets.items() %}
+            <section class="widget" id="widget-{{ widget_name }}">
+                <div class="widget-content">
+                    {{ widget_content|safe }}
+                </div>
+            </section>
+            {% endfor %}
+            
+            {% if not widgets %}
+            <section class="widget">
+                <div class="widget-content">
+                    <h2>No Widgets Available</h2>
+                    <p>No widgets could be rendered with the available data. Please check your data sources and try again.</p>
+                </div>
+            </section>
+            {% endif %}
+        </main>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Generated by <a href="#">ArloAI Reporting Engine</a> v{{ metadata.engine_version }}</p>
+            <p>Report ID: {{ metadata.generated_at[:19]|replace('T', '')|replace(' ', '')|replace(':', '')|replace('-', '') }}</p>
+        </footer>
+    </div>
+</body>
+</html>
